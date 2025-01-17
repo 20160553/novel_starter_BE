@@ -1,0 +1,28 @@
+services:
+  web:
+    build: ./app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env  # .env 파일을 지정하여 컨테이너 내에서 환경 변수를 로드
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}  # 환경 변수로 비밀번호 설정
+      MYSQL_DATABASE: ${MYSQL_DB}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
