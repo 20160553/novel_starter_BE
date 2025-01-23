@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 # FastAPI 애플리케이션 실행
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "sleep 6 && uvicorn app:app --host 0.0.0.0 --port 8000"]

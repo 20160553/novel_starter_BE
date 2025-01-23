@@ -12,6 +12,7 @@ services:
 
   db:
     image: mysql:8.0
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}  # 환경 변수로 비밀번호 설정
       MYSQL_DATABASE: ${MYSQL_DB}
