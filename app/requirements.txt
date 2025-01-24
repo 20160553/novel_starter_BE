@@ -7,3 +7,4 @@ python-dotenv==1.0.1
 pydantic==2.10.3
 pydantic_core==2.27.1
 pytz==2024.2
+PyJWT==2.10.1

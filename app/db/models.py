@@ -10,10 +10,10 @@ class User(Base):
     __tablename__ = 'users'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(255), nullable=False)
-    email = Column(String(255), unique=True, nullable=False)
+    username = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), nullable=False, default=datetime.now(timezone('Asia/Seoul')))
-    
+
     # 관계 설정: 한 유저는 여러 작품을 가질 수 있다.
     works = relationship("Work", back_populates="user")
     # 관계 설정: 한 유저는 여러 댓글을 남길 수 있다.

@@ -11,7 +11,6 @@ from schemas.models import *
 
 service_dict = defaultdict(dict)
 
-
 def session_exception_handler(func):
     """A decorator to handle exceptions in a session context.
 
@@ -166,17 +165,14 @@ class Service:
     def get_user_list(
         self,
         id: Union[int, list, None] = None,
-        name: Union[str, list, None] = None,
-        email: Union[str, list, None] = None,
+        username: Union[str, list, None] = None,
         is_active: Union[bool, list, None] = None,
     ) -> list[UserResponse]:
         conditions = []
         if id:
             conditions.append(("id", "in", id if isinstance(id, list) else [id]))
-        if name:
-            conditions.append(("name", "in", name if isinstance(name, list) else [name]))
-        if email:
-            conditions.append(("email", "in", email if isinstance(email, list) else [email]))
+        if username:
+            conditions.append(("username", "in", username if isinstance(username, list) else [username]))
         if is_active:
             conditions.append(
                 ("is_active", "in", is_active if isinstance(is_active, list) else [is_active])
@@ -194,3 +190,19 @@ class Service:
     @_mark_as_service_function(category="User")
     def update_user(self, id: int, update: Union[UserUpdate, dict]) -> UserResponse:
         return self._update_model(self.repository.users, User, UserResponse, UserUpdate, id, update)
+    
+    @_mark_as_service_function(category="User")
+    def get_user_by_username(self, username: str) -> list[UserResponse]:
+        conditions = []
+        conditions.append(("username", "eq", username))
+        return self._get_model_list(self.repository.users, UserResponse, conditions)
+    
+    @_mark_as_service_function(category="Login")
+    def login(self, user: Union[UserCreate, dict]) -> UserResponse:
+        result = self.repository.users.login(user)
+        
+        if result==None:
+            return None
+        else:
+            return to_response_model(UserResponse, result)
+        

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from schemas.models import UserCreate, UserUpdate, UserResponse
@@ -8,24 +8,23 @@ from service.service_helper import service_dict
 router = APIRouter()
 
 # User 생성
-@router.post("/users/", response_model=UserResponse)
-def create_user_endpoint(user: UserCreate):
+@router.post("/users", response_model=UserResponse)
+async def create_user_endpoint(user: UserCreate):
     task = service_dict.get('User').get("add_user")
     result = task(user=user)
     return result
 
-# @router.get("/", response_model=List[UserResponse])
-# async def get_users(
-#     user_id: Optional[list[int]] = Query(None),
-#     name: Optional[list[str]] = Query(None),
-#     email: Optional[list[str]] = Query(None),
-#     is_active: Optional[bool] = Query(None),
-# ):
-#     task = service_dict.get('User').get("get_user_list")
-#     result = task(
-        
-#     )
-#     return result
+@router.get("/", response_model=List[UserResponse])
+async def get_users(
+    id: Optional[list[int]] = Query(None),
+    username: Optional[list[str]] = Query(None),
+):
+    task = service_dict.get('User').get("get_user_list")
+    result = task(
+        id=id,
+        username=username
+    )
+    return result
 
 
 @router.get("/{id}", response_model=UserResponse)
@@ -47,3 +46,12 @@ async def delete_user(id: int):
     task = service_dict.get('User').get("delete_user")
     result = task(id=id)
     return None
+
+@router.get("/username_duplicated_check/{username}", response_model=bool)
+async def username_duplicated_check(username: str):
+    task= service_dict.get('User').get("get_user_by_username")
+    result = task(username=username)
+    if len(result) > 0:
+        return True
+    else :
+        return False

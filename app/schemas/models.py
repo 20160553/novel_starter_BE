@@ -4,7 +4,7 @@ from typing import List, Optional
 
 class CustomBaseModel(BaseModel):
     class Config:
-        orm_mode = True
+        from_attributes = True
         
     def __str__(self):
         name = self.__class__.__name__
@@ -37,13 +37,13 @@ class UserBase(CustomBaseModel):
 
 class UserCreate(UserBase):
     username: str
-    email: str
+    password: str
 
 
 class UserUpdate(UserBase):
-    username: Optional[str] = None
-    email: Optional[str] = None
+    pass
 
 
-class UserResponse(UserCreate, TimestampedBaseModel):
+class UserResponse(TimestampedBaseModel):
     id: int
+    username: str
