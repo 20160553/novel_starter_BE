@@ -47,8 +47,8 @@ async def delete_user(id: int):
     result = task(id=id)
     return None
 
-@router.get("/username_duplicated_check/{username}", response_model=bool)
-async def username_duplicated_check(username: str):
+@router.get("/duplicated_check/{username}", response_model=bool)
+async def duplicated_check(username: str):
     task= service_dict.get('User').get("get_user_by_username")
     result = task(username=username)
     if len(result) > 0:

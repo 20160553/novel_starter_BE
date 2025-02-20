@@ -3,7 +3,6 @@ from db.models import *
 from repositories.base import BaseRepository
 from schemas.models import UserCreate
 
-
 class UserRepository(BaseRepository[User]):
     def login(self, user: UserCreate) -> User:
         return (

@@ -197,7 +197,7 @@ class Service:
         conditions.append(("username", "eq", username))
         return self._get_model_list(self.repository.users, UserResponse, conditions)
     
-    @_mark_as_service_function(category="Login")
+    @_mark_as_service_function(category="Auth")
     def login(self, user: Union[UserCreate, dict]) -> UserResponse:
         result = self.repository.users.login(user)
         

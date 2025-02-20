@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.post("/login")
 async def login(user: UserCreate, response: Response = Response()):
-    task= service_dict.get('Login').get("login")
+    task= service_dict.get('Auth').get("login")
     result = task(user)
     
     if result==None:
