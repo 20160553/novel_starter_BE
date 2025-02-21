@@ -206,3 +206,12 @@ class Service:
         else:
             return to_response_model(UserResponse, result)
         
+    @_mark_as_service_function(category="Work")
+    def get_works_by_user_id(self, user_id: int) -> List[WorkResponse]:
+        conditions = []
+        conditions.append(("user_id", "in", user_id if isinstance(user_id, list) else [user_id]))
+        return self._get_model_list(self.repository.works, WorkResponse, conditions)
+
+    @_mark_as_service_function(category="Work")
+    def add_work(self, work: Union[WorkCreate, dict]):
+        return self._add_model(self.repository.works, Work, WorkResponse, work)

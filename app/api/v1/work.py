@@ -1,23 +1,37 @@
-from fastapi import FastAPI, Depends, HTTPException, Query, APIRouter
-from sqlalchemy.orm import Session
-from db.models import User, Work
+from typing import Optional
+
+from fastapi import FastAPI, Header, Depends, HTTPException, Query, APIRouter
+from service.service_helper import service_dict
+from core.utils.jwt import verify_token
+from schemas.models import WorkCreate
 
 router = APIRouter()
 
-# # 엔드포인트: 특정 유저의 작품 조회
-# @router.get("/work")
-# def get_works(user_id: int, db: Session = Depends(get_db)):
-#     # 유저 조회
-#     user = db.query(User).filter(User.user_id == user_id).first()
-#     if not user:
-#         raise HTTPException(status_code=404, detail="User not found")
+#특정 유저의 작품 조회
+@router.get("/{user_id}")
+async def get_works_by_user_id(user_id: int):
+    getUserTask = service_dict.get('User').get("get_user_by_id")
+    user = getUserTask(user_id)
     
-#     # 해당 유저의 작품들 조회
-#     works = db.query(Work).filter(Work.user_id == user_id).all()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     
-#     # 작품이 없다면, 빈 리스트 반환
-#     if not works:
-#         return {"message": "No works found for this user"}
+    getWorksTask = service_dict.get('Work').get("get_works_by_user_id")
+    works = getWorksTask(user_id)
+    return works
+
+#특정 유저의 작품 추가
+@router.post("/")
+async def create_work(work: WorkCreate, authorization: Optional[str] = Header(None)):
+    payload = verify_token(authorization.split(' ')[1])
     
-#     # 작품 목록 반환
-#     return {"user": user.username, "works": [work.title for work in works]}
+    if (payload == None):
+        raise HTTPException(status_code=401, detail="AccessToken is strange!")
+    
+    addWorkTask = service_dict.get('Work').get("add_work")
+    
+    newWork = WorkCreate(title=work.title, description=work.description, user_id=payload['id'])
+    
+    result = addWorkTask(work)
+    
+    return result

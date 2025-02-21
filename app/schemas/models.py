@@ -34,6 +34,8 @@ class UserBase(CustomBaseModel):
     # is_active: Optional[bool] = True
     pass
 
+class WorkBase(CustomBaseModel):
+    pass
 
 class UserCreate(UserBase):
     username: str
@@ -47,3 +49,14 @@ class UserUpdate(UserBase):
 class UserResponse(TimestampedBaseModel):
     id: int
     username: str
+
+class WorkCreate(WorkBase):
+    title: str
+    description: str
+    user_id: Optional[int] = 1
+
+class WorkResponse(TimestampedBaseModel):
+    id: int
+    title: str
+    
+    
